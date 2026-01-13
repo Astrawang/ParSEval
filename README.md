@@ -76,6 +76,8 @@ to generate test database instances for input query SQL1.
 To test the equivalence of two queries:
 ```bash
 python main.py --schema SCHEMA --dialect sqlite --gold SQL1 --pred SQL2
+
+python main.py --schema ./schema.txt --dialect sqlite --gold ./sql1.sql --pred ./sql2.sql
 ```
 
 One can enhance the readability of generated data for common column types by customizing the data generation strategy in the `register_default_generators` function.

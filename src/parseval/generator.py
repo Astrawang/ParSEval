@@ -193,6 +193,7 @@ class Generator:
                     logger.info(concretes)
                     for table_name in instance.catalog.tables:
                         if table_name in concretes:
+                            print("create_row", table_name, concretes[table_name])
                             instance.create_row(table_name, concretes[table_name])
 
             if index < max_iter - 1:

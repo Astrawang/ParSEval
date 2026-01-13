@@ -42,8 +42,9 @@ def remove_limit(gold, pred):
         return query1, query2
     return gold , pred
 
-def compare_sql(host_or_path, predicted_sql, ground_truth, relax_eq = False):
-    with DBManager().get_connection(host_or_path) as conn:    
+def compare_sql(host_or_path, database, predicted_sql, ground_truth, relax_eq = False):
+    print(host_or_path)
+    with DBManager().get_connection(host_or_path, database) as conn:    
         message = {}
         predicted_res = []
         ground_truth_res = []    

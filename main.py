@@ -39,17 +39,41 @@ if __name__ == "__main__":
     register_default_generators()
     from src.parseval.generator import Generator
     schema = args.schema
+    host_or_path = "examples"
+
     if args.offline:
         generator = Generator(schema, args.gold, dialect=args.dialect, name = 'test')
         result =generator.generate(max_iter= maxiter)
+
+        filename = os.path.join(host_or_path, "test.sqlite")
+        if os.path.exists(filename):
+            os.remove(filename)
+        result.to_db(host_or_path, "test")
     else:
         generator = Generator(schema, args.gold, dialect=args.dialect, name = 'test_gold')
         result1 =generator.generate(max_iter= maxiter)
-        result = compare_sql(result1, args.gold, args.pred)
-        if result['state'] == 'EQ':
+        
+        filename = os.path.join(host_or_path, "gold.sqlite")
+        if os.path.exists(filename):
+            os.remove(filename)
+        result1.to_db(host_or_path, "gold")
+        
+        result = compare_sql(host_or_path, "gold.sqlite", args.gold, args.pred)
+        print(result)
+        import time
+        time.sleep(5)
+        # result = compare_sql(result1, args.gold, args.pred)
+        if result['state'] == 'EQ' or result['state'] == 'UNKNOWN':
             generator = Generator(schema, args.pred, dialect=args.dialect, name = 'test_pred')
             result2 =generator.generate(max_iter= maxiter)
-            result = compare_sql(result2, args.gold, args.pred)
+
+            filename = os.path.join(host_or_path, "pred.sqlite")
+            if os.path.exists(filename):
+                os.remove(filename)
+            result1.to_db(host_or_path, "pred")
+
+            result = compare_sql(host_or_path, "pred.sqlite", args.gold, args.pred)
+            print(result)
         
 
 
