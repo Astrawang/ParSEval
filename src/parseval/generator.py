@@ -16,6 +16,7 @@ from src.parseval.uexpr.speculate import SpeculateEngine, TypeEnv
 
 from itertools import product
 from src.parseval.logger import Logger
+import os
 
 Logger(
     verbose={
@@ -160,6 +161,7 @@ class Generator:
                 for constraint in constraints:
                     solver.add_constraint(constraint)
 
+            os.makedirs("examples/db", exist_ok=True)
             with open(f"examples/db/{self.name}_constraints.txt", "a") as f:
                 f.write(f"=== Iteration {index} ===\n")
                 for label, constraints in self.constraints.items():

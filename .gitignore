@@ -171,8 +171,11 @@ datasets/
 examples
 README-dev.md
 
+qParser/
+
 src/runtim/
-src/runtime/
+src/runtime/**
+!src/runtime/verifier.py
 src/pipeline/
 src/engine/
 src/engine copy/

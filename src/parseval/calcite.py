@@ -304,7 +304,7 @@ def get_logical_plan(
     queries: List[str],
     function_defs: List[str] = None,
     dialect="sqlite",
-    address="172.20.0.3",
+    address="127.0.0.1",
     port=25333,
 ):
     function_defs = FUNCTION_DEF if function_defs is None else function_defs

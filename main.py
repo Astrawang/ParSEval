@@ -21,22 +21,33 @@ if __name__ == "__main__":
 
     
     args = parser.parse_args()
+
+    if args.schema:
+        with open(args.schema, "r") as f:
+            args.schema = f.read()
+    if args.gold:
+        with open(args.gold, "r") as f:
+            args.gold = f.read()
+    if args.pred:
+        with open(args.pred, "r") as f:
+            args.pred = f.read()
+
     dialect = args.dialect
     maxiter = args.maxiter
     
     ctx = get_ctx(log_level = 'INFO', result_path = 'results/dail')
     register_default_generators()
-    from src.runtime.generator import Generator
+    from src.parseval.generator import Generator
     schema = args.schema
     if args.offline:
-        generator = Generator('tests/db', schema, args.gold, name = 'test')
+        generator = Generator(schema, args.gold, dialect=args.dialect, name = 'test')
         result =generator.generate(max_iter= maxiter)
     else:
-        generator = Generator('tests/db', schema, args.gold, name = 'test_gold')
+        generator = Generator(schema, args.gold, dialect=args.dialect, name = 'test_gold')
         result1 =generator.generate(max_iter= maxiter)
         result = compare_sql(result1, args.gold, args.pred)
         if result['state'] == 'EQ':
-            generator = Generator('tests/db', schema, args.pred, name = 'test_pred')
+            generator = Generator(schema, args.pred, dialect=args.dialect, name = 'test_pred')
             result2 =generator.generate(max_iter= maxiter)
             result = compare_sql(result2, args.gold, args.pred)
         

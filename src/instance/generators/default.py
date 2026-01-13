@@ -3,7 +3,7 @@ import string
 from datetime import datetime, timedelta
 from typing import Optional, List, Set, Any, Union
 import logging
-from src.expression.types import DataType
+from src.parseval.dtype import DataType
 from .registry import ValueGeneratorRegistry
 
 logger = logging.getLogger('src.parseval.instance.generators')

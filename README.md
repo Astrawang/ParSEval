@@ -55,9 +55,15 @@ pip install -r requirements.txt
 
 ### Usage
 
+```bash
+apt install -y graphviz
+```
+
 Normally, one invoke the tool as 
 ```bash
 python main.py --schema SCHEMA --dialect sqlite --gold SQL1 --offline
+
+python main.py --schema ./schema.txt --dialect sqlite --gold ./sql3.sql --offline true
 ```
 to generate test database instances for input query SQL1.
 

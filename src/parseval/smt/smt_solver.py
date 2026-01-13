@@ -8,6 +8,7 @@ from src.parseval.dtype import DataType
 from src.parseval.symbol import Variable, Symbol, Condition, Const
 
 import logging
+import os
 
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
@@ -228,6 +229,7 @@ class SMTSolver(SolverAdapter):
                         metadata={},
                     )
                 )
+        os.makedirs("tests/db", exist_ok=True)
         with open("tests/db/smt_debug.smt2", "a") as f:
             f.write(sexpr + "\n")
             f.write(str(status) + "\n")
