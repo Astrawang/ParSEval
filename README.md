@@ -55,8 +55,14 @@ pip install -r requirements.txt
 
 ### Usage
 
+install graphviz
 ```bash
 apt install -y graphviz
+```
+
+comment `qParser/src/main/java/com/parseval/schema/CustomizeSchema.java` line 59:
+```java
+// import org.example.sql.operands.CustomOperand;
 ```
 
 Normally, one invoke the tool as 
