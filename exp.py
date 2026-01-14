@@ -3,7 +3,8 @@ import os
 import json
 import subprocess
 import time
-import concurrent.futures
+import multiprocessing
+import queue
 
 
 from src.corekit import get_ctx
@@ -40,6 +41,13 @@ def test_one_parseval(schema, gold, pred, dialect, maxiter, output):
             traceback.print_exc()
             result.append({'state': 'ERROR', 'msg': str(e)})
     return result
+
+def worker_wrapper(q, func, *args, **kwargs):
+    try:
+        result = func(*args, **kwargs)
+        q.put(result)
+    except Exception as e:
+        q.put([{"state": "ERROR", "msg": str(e)}])
     
 
 if __name__ == "__main__":
@@ -62,32 +70,49 @@ if __name__ == "__main__":
         test_func = test_one_parseval
     else:
         raise NotImplementedError(f"Method {args.method} not implemented.")
-        
+    
+    progress_file = os.path.join("results", args.dataset, f"{args.method}-progress.txt")
+    
     for i, (gold_sql, pred_sql) in enumerate(zip(gold_sqls, pred_sqls)):
+        with open(progress_file, "w") as f:
+            f.write(f"{i}\n")
+
         database = gold_sql.split("----- SQL-EVAL -----")[1].strip()
         with open(os.path.join(dataset_path, "schema", f"{database}.sql")) as f:
             schema = f.read()
+            
         output = {
             "path": os.path.join("results", args.dataset, args.method),
             "name": f"q{i}"
         }
         os.makedirs(output["path"], exist_ok=True)
-        try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                future = executor.submit(
-                    test_func, 
-                    schema, 
-                    gold_sql, 
-                    pred_sql, 
-                    args.dialect, 
-                    args.maxiter, 
-                    output
-                )
-                result = future.result(timeout=args.timeout)
-        except concurrent.futures.TimeoutError:
+        
+        if os.path.exists(os.path.join(output["path"], f"q{i}_result.json")):
+            continue
+        
+        q = multiprocessing.Queue()
+        
+        p = multiprocessing.Process(
+            target=worker_wrapper, 
+            args=(q, test_func, schema, gold_sql, pred_sql, args.dialect, args.maxiter, output)
+        )
+        
+        p.start()
+        
+        p.join(timeout=args.timeout)
+
+        if p.is_alive():
+            print(f"Query {i} TIMEOUT, killing process...")
+            p.terminate() 
+            p.join() 
             result = [{"state": "TIMEOUT"}]
-        except Exception as e:
-            result = [{"state": "ERROR", "msg": str(e)}]
-        # result = test_func(schema, gold_sql, pred_sql, args.dialect, args.maxiter, output)
+        else:
+            try:
+                result = q.get_nowait()
+            except queue.Empty:
+                result = [{"state": "ERROR", "msg": "Process crashed without output"}]
+        
         with open(os.path.join(output["path"], f"q{i}_result.json"), "w") as f:
             json.dump(result, f, indent=4)
+        print(f"completed {i}: {result}")
+        time.sleep(1)
