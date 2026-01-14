@@ -50,29 +50,42 @@ if __name__ == "__main__":
             os.remove(filename)
         result.to_db(host_or_path, "test")
     else:
-        generator = Generator(schema, args.gold, dialect=args.dialect, name = 'test_gold')
-        result1 =generator.generate(max_iter= maxiter)
-        
-        filename = os.path.join(host_or_path, "gold.sqlite")
-        if os.path.exists(filename):
-            os.remove(filename)
-        result1.to_db(host_or_path, "gold")
-        
-        result = compare_sql(host_or_path, "gold.sqlite", args.gold, args.pred)
-        print(result)
-        import time
-        time.sleep(5)
-        # result = compare_sql(result1, args.gold, args.pred)
-        if result['state'] == 'EQ' or result['state'] == 'UNKNOWN':
-            generator = Generator(schema, args.pred, dialect=args.dialect, name = 'test_pred')
-            result2 =generator.generate(max_iter= maxiter)
-
-            filename = os.path.join(host_or_path, "pred.sqlite")
+        print("Generating for gold query...")
+        try:
+            generator = Generator(schema, args.gold, dialect=args.dialect, name = 'test_gold')
+            result1 =generator.generate(max_iter= maxiter)
+            
+            filename = os.path.join(host_or_path, "gold.sqlite")
             if os.path.exists(filename):
                 os.remove(filename)
-            result1.to_db(host_or_path, "pred")
+            result1.to_db(host_or_path, "gold")
+            
+            result = compare_sql(host_or_path, "gold.sqlite", args.gold, args.pred)
+        except Exception as e:
+            print("Error during generation or comparison:", e)
+            result = {'state': 'ERROR', 'message': str(e)}
+        print(result)
 
-            result = compare_sql(host_or_path, "pred.sqlite", args.gold, args.pred)
+        import time
+        time.sleep(3)
+
+        if result['state'] == 'EQ' or result['state'] == 'UNKNOWN' or result['state'] == 'ERROR':
+            print("Generating for pred query...")
+            try:
+                 generator = Generator(schema, args.pred, dialect=args.dialect, name = 'test_pred')
+                 result2 =generator.generate(max_iter= maxiter)
+
+                 filename = os.path.join(host_or_path, "pred.sqlite")
+                 if os.path.exists(filename):
+                     os.remove(filename)
+                 result2.to_db(host_or_path, "pred")
+
+                 result = compare_sql(host_or_path, "pred.sqlite", args.gold, args.pred)
+            except Exception as e:
+                print("Error during generation or comparison:", e)
+                import traceback
+                traceback.print_exc()
+                result = {'state': 'ERROR', 'message': str(e)}
             print(result)
         
 

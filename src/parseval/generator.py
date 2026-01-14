@@ -129,8 +129,8 @@ class Generator:
 
     def generate(self, max_iter, threshold=1):
         instance = Instance(ddls=self.schema, name=self.name, dialect=self.dialect)
-        # for table_name in instance.catalog.tables:
-        #     instance.create_row(table_name, {})
+        for table_name in instance.catalog.tables:
+            instance.create_row(table_name, {})
 
         speculative = SpeculateEngine().infer(self.plan)
         for columnref, datatype in speculative.items():
@@ -193,7 +193,6 @@ class Generator:
                     logger.info(concretes)
                     for table_name in instance.catalog.tables:
                         if table_name in concretes:
-                            print("create_row", table_name, concretes[table_name])
                             instance.create_row(table_name, concretes[table_name])
 
             if index < max_iter - 1:

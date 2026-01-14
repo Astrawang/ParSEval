@@ -520,7 +520,14 @@ class AggregateEncoder(OperatorEncoder):
                         raise NotImplementedError(
                             f"Aggregate function {agg_func} not implemented yet."
                         )
-                    values = [row[ref] for row in rows]
+                    # fix count(*)
+                    try:
+                        values = [row[ref] for row in rows]
+                    except IndexError:
+                        print("Index error, trying to fix")
+                        print(len([1 for _ in rows]))
+                        values = [row[0] for row in rows]
+                    # end fix
 
                     g.extend(values)
                     concretes = [v for v in values if v.concrete is not None]

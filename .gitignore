@@ -172,7 +172,8 @@ examples
 README-dev.md
 
 qParser/
-tests/db/smt_debug.smt2
+tests/db/
+results/
 
 src/runtim/
 src/runtime/**

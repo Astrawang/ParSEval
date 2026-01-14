@@ -54,6 +54,8 @@ def compare_sql(host_or_path, database, predicted_sql, ground_truth, relax_eq = 
         if not ground_truth_res and predicted_res:
             message['msg'] = 'Gold NULL VS Pred NOT NULL'
 
+        # print("Ground Truth Result:", list(ground_truth_res))
+        # print("Predicted Result:", list(predicted_res))
         eq = compare_df(list(ground_truth_res), list(predicted_res), order_matters = not relax_eq)
         if eq == 1:
             message['state'] = 'EQ'
