@@ -19,3 +19,4 @@ for path in os.listdir("./data/bird-dev/database"):
 ```
 
 2. remove all `autoincrement` in ddl
+3. `default x not null` -> `not null default x`

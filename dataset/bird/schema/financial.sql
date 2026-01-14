@@ -1,8 +1,8 @@
 CREATE TABLE account
 (
-    account_id  INTEGER default 0 not null
+    account_id  INTEGER not null default 0 
         primary key,
-    district_id INTEGER default 0 not null,
+    district_id INTEGER not null default 0 ,
     frequency   TEXT   not null,
     date        DATE          not null,
     foreign key (district_id) references district (district_id)
@@ -10,7 +10,7 @@ CREATE TABLE account
 
 CREATE TABLE card
 (
-    card_id INTEGER default 0 not null
+    card_id INTEGER not null default 0 
         primary key,
     disp_id INTEGER           not null,
     type    TEXT    not null,
@@ -41,7 +41,7 @@ CREATE TABLE disp
 
 CREATE TABLE district
 (
-    district_id INTEGER default 0 not null
+    district_id INTEGER not null default 0 
         primary key,
     A2          TEXT   not null,
     A3          TEXT   not null,
@@ -62,7 +62,7 @@ CREATE TABLE district
 
 CREATE TABLE loan
 (
-    loan_id    INTEGER default 0 not null
+    loan_id    INTEGER not null default 0 
         primary key,
     account_id INTEGER           not null,
     date       DATE          not null,
@@ -75,7 +75,7 @@ CREATE TABLE loan
 
 CREATE TABLE `order`
 (
-    order_id   INTEGER default 0 not null
+    order_id   INTEGER not null default 0 
         primary key,
     account_id INTEGER           not null,
     bank_to    TEXT    not null,
@@ -87,9 +87,9 @@ CREATE TABLE `order`
 
 CREATE TABLE trans
 (
-    trans_id   INTEGER default 0    not null
+    trans_id   INTEGER not null default 0 
         primary key,
-    account_id INTEGER default 0    not null,
+    account_id INTEGER not null default 0 ,
     date       DATE             not null,
     type       TEXT       not null,
     operation  TEXT      null,

@@ -2,14 +2,14 @@ CREATE TABLE circuits
 (
     circuitId  INTEGER
         primary key,
-    circuitRef TEXT default '' not null,
-    name       TEXT default '' not null,
+    circuitRef TEXT not null default '',
+    name       TEXT not null default '',
     location   TEXT,
     country    TEXT,
     lat        REAL,
     lng        REAL,
     alt        INTEGER,
-    url        TEXT default '' not null
+    url        TEXT not null default ''
         unique
 );
 
@@ -17,33 +17,33 @@ CREATE TABLE constructors
 (
     constructorId  INTEGER
         primary key,
-    constructorRef TEXT default '' not null,
-    name           TEXT default '' not null
+    constructorRef TEXT not null default '',
+    name           TEXT not null default ''
         unique,
     nationality    TEXT,
-    url            TEXT default '' not null
+    url            TEXT not null default ''
 );
 
 CREATE TABLE drivers
 (
     driverId    INTEGER
         primary key,
-    driverRef   TEXT default '' not null,
+    driverRef   TEXT not null default '',
     number      INTEGER,
     code        TEXT,
-    forename    TEXT default '' not null,
-    surname     TEXT default '' not null,
+    forename    TEXT not null default '',
+    surname     TEXT not null default '',
     dob         DATE,
     nationality TEXT,
-    url         TEXT default '' not null
+    url         TEXT not null default ''
         unique
 );
 
 CREATE TABLE seasons
 (
-    year INTEGER default 0  not null
+    year INTEGER not null default 0 
         primary key,
-    url  TEXT    default '' not null
+    url  TEXT    not null default ''
         unique
 );
 
@@ -51,11 +51,11 @@ CREATE TABLE races
 (
     raceId    INTEGER
         primary key,
-    year      INTEGER default 0            not null,
-    round     INTEGER default 0            not null,
-    circuitId INTEGER default 0            not null,
-    name      TEXT    default ''           not null,
-    date      DATE    default '0000-00-00' not null,
+    year      INTEGER not null default 0           ,
+    round     INTEGER not null default 0           ,
+    circuitId INTEGER not null default 0           ,
+    name      TEXT    not null default ''          ,
+    date      DATE    not null default '0000-00-00',
     time      TEXT,
     url       TEXT unique,
     foreign key (year) references seasons(year),
@@ -66,8 +66,8 @@ CREATE TABLE constructorResults
 (
     constructorResultsId INTEGER
         primary key,
-    raceId               INTEGER default 0 not null,
-    constructorId        INTEGER default 0 not null,
+    raceId               INTEGER not null default 0 ,
+    constructorId        INTEGER not null default 0 ,
     points               REAL,
     status               TEXT,
     foreign key (raceId) references races(raceId),
@@ -79,12 +79,12 @@ CREATE TABLE constructorStandings
 (
     constructorStandingsId INTEGER
         primary key,
-    raceId                 INTEGER default 0 not null,
-    constructorId          INTEGER default 0 not null,
-    points                 REAL   default 0 not null,
+    raceId                 INTEGER not null default 0 ,
+    constructorId          INTEGER not null default 0 ,
+    points                 REAL   not null default 0 ,
     position               INTEGER,
     positionText           TEXT,
-    wins                   INTEGER default 0 not null,
+    wins                   INTEGER not null default 0 ,
     foreign key (raceId) references races(raceId),
     foreign key (constructorId) references constructors(constructorId)
 );
@@ -93,12 +93,12 @@ CREATE TABLE driverStandings
 (
     driverStandingsId INTEGER
         primary key,
-    raceId            INTEGER default 0 not null,
-    driverId          INTEGER default 0 not null,
-    points            REAL   default 0 not null,
+    raceId            INTEGER not null default 0 ,
+    driverId          INTEGER not null default 0 ,
+    points            REAL   not null default 0 ,
     position          INTEGER,
     positionText      TEXT,
-    wins              INTEGER default 0 not null,
+    wins              INTEGER not null default 0 ,
     foreign key (raceId) references races(raceId),
     foreign key (driverId) references drivers(driverId)
 );
@@ -134,10 +134,10 @@ CREATE TABLE qualifying
 (
     qualifyId     INTEGER
         primary key,
-    raceId        INTEGER default 0 not null,
-    driverId      INTEGER default 0 not null,
-    constructorId INTEGER default 0 not null,
-    number        INTEGER default 0 not null,
+    raceId        INTEGER not null default 0 ,
+    driverId      INTEGER not null default 0 ,
+    constructorId INTEGER not null default 0 ,
+    number        INTEGER not null default 0 ,
     position      INTEGER,
     q1            TEXT,
     q2            TEXT,
@@ -151,30 +151,30 @@ CREATE TABLE status
 (
     statusId INTEGER
         primary key,
-    status   TEXT default '' not null
+    status   TEXT not null default ''
 );
 
 CREATE TABLE results
 (
     resultId        INTEGER
         primary key,
-    raceId          INTEGER default 0  not null,
-    driverId        INTEGER default 0  not null,
-    constructorId   INTEGER default 0  not null,
+    raceId          INTEGER not null default 0 ,
+    driverId        INTEGER not null default 0 ,
+    constructorId   INTEGER not null default 0 ,
     number          INTEGER,
-    grid            INTEGER default 0  not null,
+    grid            INTEGER not null default 0 ,
     position        INTEGER,
-    positionText    TEXT    default '' not null,
-    positionOrder   INTEGER default 0  not null,
-    points          REAL   default 0  not null,
-    laps            INTEGER default 0  not null,
+    positionText    TEXT    not null default '',
+    positionOrder   INTEGER not null default 0 ,
+    points          REAL   not null default 0 ,
+    laps            INTEGER not null default 0 ,
     time            TEXT,
     milliseconds    INTEGER,
     fastestLap      INTEGER,
     rank            INTEGER default 0,
     fastestLapTime  TEXT,
     fastestLapSpeed TEXT,
-    statusId        INTEGER default 0  not null,
+    statusId        INTEGER not null default 0 ,
     foreign key (raceId) references races(raceId),
     foreign key (driverId) references drivers(driverId),
     foreign key (constructorId) references constructors(constructorId),

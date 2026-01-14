@@ -19,7 +19,7 @@ CREATE TABLE Examination
 
 CREATE TABLE Patient
 (
-    ID           INTEGER default 0 not null
+    ID           INTEGER not null default 0 
         primary key,
     SEX          TEXT  null,
     Birthday     DATE          null,
@@ -31,8 +31,8 @@ CREATE TABLE Patient
 
 CREATE TABLE Laboratory
 (
-    ID        INTEGER  default 0            not null,
-    Date      DATE default '0000-00-00' not null,
+    ID        INTEGER   not null default 0,
+    Date      DATE  not null default '0000-00-00',
     GOT       INTEGER                       null,
     GPT       INTEGER                        null,
     LDH       INTEGER                        null,
