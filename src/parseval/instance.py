@@ -301,7 +301,7 @@ class Instance:
                 if mapped_data:
 
                     column_list = ", ".join(columns)
-                    stmt = f"INSERT INTO {table_name} ({column_list}) VALUES ({', '.join(parameters)})"
+                    stmt = f"INSERT INTO `{table_name}` ({column_list}) VALUES ({', '.join(parameters)})"
                     with open(f"examples/db/{self.name}_data_inserts.sql", "a") as f:
                         f.write(f"-- Inserting into table: {table_name} --\n")
                         for data in mapped_data:
@@ -313,7 +313,7 @@ class Instance:
                                 ]
                             )
                             f.write(
-                                f"INSERT INTO {table_name} ({cols}) VALUES ({vals});\n"
+                                f"INSERT INTO `{table_name}` ({cols}) VALUES ({vals});\n"
                             )
 
                     # logging.info(mapped_data)
