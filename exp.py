@@ -74,8 +74,9 @@ if __name__ == "__main__":
     progress_file = os.path.join("results", args.dataset, f"{args.method}-progress.txt")
     
     for i, (gold_sql, pred_sql) in enumerate(zip(gold_sqls, pred_sqls)):
+        name = f"q{i + 1}"
         with open(progress_file, "w") as f:
-            f.write(f"{i}\n")
+            f.write(name)
 
         database = gold_sql.split("----- SQL-EVAL -----")[1].strip()
         with open(os.path.join(dataset_path, "schema", f"{database}.sql")) as f:
@@ -83,11 +84,11 @@ if __name__ == "__main__":
             
         output = {
             "path": os.path.join("results", args.dataset, args.method),
-            "name": f"q{i}"
+            "name": name
         }
         os.makedirs(output["path"], exist_ok=True)
         
-        if os.path.exists(os.path.join(output["path"], f"q{i}_result.json")):
+        if os.path.exists(os.path.join(output["path"], f"{name}_result.json")):
             continue
         
         q = multiprocessing.Queue()
@@ -102,7 +103,7 @@ if __name__ == "__main__":
         p.join(timeout=args.timeout)
 
         if p.is_alive():
-            print(f"Query {i} TIMEOUT, killing process...")
+            print(f"Query {name} TIMEOUT, killing process...")
             p.terminate() 
             p.join() 
             result = [{"state": "TIMEOUT"}]
@@ -112,7 +113,7 @@ if __name__ == "__main__":
             except queue.Empty:
                 result = [{"state": "ERROR", "msg": "Process crashed without output"}]
         
-        with open(os.path.join(output["path"], f"q{i}_result.json"), "w") as f:
+        with open(os.path.join(output["path"], f"{name}_result.json"), "w") as f:
             json.dump(result, f, indent=4)
-        print(f"completed {i}: {result}")
+        print(f"completed {name}: {result}")
         time.sleep(1)

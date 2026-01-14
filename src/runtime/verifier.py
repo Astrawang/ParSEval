@@ -42,14 +42,19 @@ def remove_limit(gold, pred):
         return query1, query2
     return gold , pred
 
-def compare_sql(host_or_path, database, predicted_sql, ground_truth, relax_eq = False):
+def compare_sql(host_or_path, database, ground_truth, predicted_sql, relax_eq = False):
     print(host_or_path)
     with DBManager().get_connection(host_or_path, database) as conn:    
         message = {}
         predicted_res = []
         ground_truth_res = []    
         ground_truth, predicted_sql = remove_limit(ground_truth, predicted_sql)
-        predicted_res = conn.execute(predicted_sql)
+        try:
+            predicted_res = conn.execute(predicted_sql)
+        except Exception as e:
+            message['state'] = 'SQL_ERROR'
+            message['msg'] = str(e)
+            return message
         ground_truth_res = conn.execute(ground_truth)
         if not ground_truth_res and predicted_res:
             message['msg'] = 'Gold NULL VS Pred NOT NULL'

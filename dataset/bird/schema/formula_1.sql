@@ -1,7 +1,7 @@
 CREATE TABLE circuits
 (
     circuitId  INTEGER
-        primary key autoincrement,
+        primary key,
     circuitRef TEXT default '' not null,
     name       TEXT default '' not null,
     location   TEXT,
@@ -16,7 +16,7 @@ CREATE TABLE circuits
 CREATE TABLE constructors
 (
     constructorId  INTEGER
-        primary key autoincrement,
+        primary key,
     constructorRef TEXT default '' not null,
     name           TEXT default '' not null
         unique,
@@ -27,7 +27,7 @@ CREATE TABLE constructors
 CREATE TABLE drivers
 (
     driverId    INTEGER
-        primary key autoincrement,
+        primary key,
     driverRef   TEXT default '' not null,
     number      INTEGER,
     code        TEXT,
@@ -50,7 +50,7 @@ CREATE TABLE seasons
 CREATE TABLE races
 (
     raceId    INTEGER
-        primary key autoincrement,
+        primary key,
     year      INTEGER default 0            not null,
     round     INTEGER default 0            not null,
     circuitId INTEGER default 0            not null,
@@ -65,7 +65,7 @@ CREATE TABLE races
 CREATE TABLE constructorResults
 (
     constructorResultsId INTEGER
-        primary key autoincrement,
+        primary key,
     raceId               INTEGER default 0 not null,
     constructorId        INTEGER default 0 not null,
     points               REAL,
@@ -78,7 +78,7 @@ CREATE TABLE constructorResults
 CREATE TABLE constructorStandings
 (
     constructorStandingsId INTEGER
-        primary key autoincrement,
+        primary key,
     raceId                 INTEGER default 0 not null,
     constructorId          INTEGER default 0 not null,
     points                 REAL   default 0 not null,
@@ -92,7 +92,7 @@ CREATE TABLE constructorStandings
 CREATE TABLE driverStandings
 (
     driverStandingsId INTEGER
-        primary key autoincrement,
+        primary key,
     raceId            INTEGER default 0 not null,
     driverId          INTEGER default 0 not null,
     points            REAL   default 0 not null,
@@ -133,7 +133,7 @@ CREATE TABLE pitStops
 CREATE TABLE qualifying
 (
     qualifyId     INTEGER
-        primary key autoincrement,
+        primary key,
     raceId        INTEGER default 0 not null,
     driverId      INTEGER default 0 not null,
     constructorId INTEGER default 0 not null,
@@ -150,14 +150,14 @@ CREATE TABLE qualifying
 CREATE TABLE status
 (
     statusId INTEGER
-        primary key autoincrement,
+        primary key,
     status   TEXT default '' not null
 );
 
 CREATE TABLE results
 (
     resultId        INTEGER
-        primary key autoincrement,
+        primary key,
     raceId          INTEGER default 0  not null,
     driverId        INTEGER default 0  not null,
     constructorId   INTEGER default 0  not null,

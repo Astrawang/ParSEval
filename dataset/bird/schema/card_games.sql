@@ -1,7 +1,7 @@
 CREATE TABLE "cards"
 (
     id                      INTEGER           not null
-        primary key autoincrement,
+        primary key,
     artist                  TEXT,
     asciiName               TEXT,
     availability            TEXT,
@@ -81,7 +81,7 @@ CREATE TABLE "cards"
 CREATE TABLE "foreign_data"
 (
     id           INTEGER not null
-        primary key autoincrement,
+        primary key,
     flavorText   TEXT,
     language     TEXT,
     multiverseid INTEGER,
@@ -95,7 +95,7 @@ CREATE TABLE "foreign_data"
 CREATE TABLE "legalities"
 (
     id     INTEGER not null
-        primary key autoincrement,
+        primary key,
     format TEXT,
     status TEXT,
     uuid   TEXT
@@ -106,7 +106,7 @@ CREATE TABLE "legalities"
 CREATE TABLE "sets"
 (
     id               INTEGER           not null
-        primary key autoincrement,
+        primary key,
     baseSetSize      INTEGER,
     block            TEXT,
     booster          TEXT,
@@ -133,7 +133,7 @@ CREATE TABLE "sets"
 CREATE TABLE "set_translations"
 (
     id          INTEGER not null
-        primary key autoincrement,
+        primary key,
     language    TEXT,
     setCode     TEXT
         references sets (code)
@@ -144,7 +144,7 @@ CREATE TABLE "set_translations"
 CREATE TABLE "rulings"
 (
     id   INTEGER not null
-        primary key autoincrement,
+        primary key,
     date DATE,
     text TEXT,
     uuid TEXT

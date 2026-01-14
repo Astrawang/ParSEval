@@ -1,5 +1,5 @@
 CREATE TABLE "Player_Attributes" (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`id`	INTEGER PRIMARY KEY,
 	`player_fifa_api_id`	INTEGER,
 	`player_api_id`	INTEGER,
 	`date`	TEXT,
@@ -46,7 +46,7 @@ CREATE TABLE "Player_Attributes" (
 );
 
 CREATE TABLE `Player` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`id`	INTEGER PRIMARY KEY,
 	`player_api_id`	INTEGER UNIQUE,
 	`player_name`	TEXT,
 	`player_fifa_api_id`	INTEGER UNIQUE,
@@ -56,19 +56,19 @@ CREATE TABLE `Player` (
 );
 
 CREATE TABLE `League` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`id`	INTEGER PRIMARY KEY,
 	`country_id`	INTEGER,
 	`name`	TEXT UNIQUE,
 	FOREIGN KEY(`country_id`) REFERENCES `country`(`id`)
 );
 
 CREATE TABLE `Country` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`id`	INTEGER PRIMARY KEY,
 	`name`	TEXT UNIQUE
 );
 
 CREATE TABLE "Team" (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`id`	INTEGER PRIMARY KEY,
 	`team_api_id`	INTEGER UNIQUE,
 	`team_fifa_api_id`	INTEGER,
 	`team_long_name`	TEXT,
@@ -76,7 +76,7 @@ CREATE TABLE "Team" (
 );
 
 CREATE TABLE `Team_Attributes` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`id`	INTEGER PRIMARY KEY,
 	`team_fifa_api_id`	INTEGER,
 	`team_api_id`	INTEGER,
 	`date`	TEXT,
@@ -108,7 +108,7 @@ CREATE TABLE `Team_Attributes` (
 CREATE TABLE "Match"
 (
     id               INTEGER
-        primary key autoincrement,
+        primary key,
     country_id       INTEGER
         references Country,
     league_id        INTEGER

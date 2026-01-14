@@ -25,7 +25,7 @@ CREATE TABLE products
 CREATE TABLE "transactions_1k"
 (
     TransactionID INTEGER
-        primary key autoincrement,
+        primary key,
     Date          DATE,
     Time          TEXT,
     CustomerID    INTEGER,
