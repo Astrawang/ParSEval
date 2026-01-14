@@ -20,3 +20,4 @@ for path in os.listdir("./data/bird-dev/database"):
 
 2. remove all `autoincrement` in ddl
 3. `default x not null` -> `not null default x`
+4. enclose all table name and column name in ddl with backquote(\`)
