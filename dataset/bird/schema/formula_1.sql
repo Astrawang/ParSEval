@@ -1,182 +1,182 @@
-CREATE TABLE `circuits`
+CREATE TABLE circuits
 (
-    `circuitId`  INTEGER
-        primary key,
-    `circuitRef` TEXT not null default '',
-    `name`       TEXT not null default '',
-    `location`   TEXT,
-    `country`    TEXT,
-    `lat`        REAL,
-    `lng`        REAL,
-    `alt`        INTEGER,
-    `url`        TEXT not null default ''
+    circuitId  INTEGER
+        primary key autoincrement,
+    circuitRef TEXT default '' not null,
+    name       TEXT default '' not null,
+    location   TEXT,
+    country    TEXT,
+    lat        REAL,
+    lng        REAL,
+    alt        INTEGER,
+    url        TEXT default '' not null
         unique
 );
 
-CREATE TABLE `constructors`
+CREATE TABLE constructors
 (
-    `constructorId`  INTEGER
-        primary key,
-    `constructorRef` TEXT not null default '',
-    `name`           TEXT not null default ''
+    constructorId  INTEGER
+        primary key autoincrement,
+    constructorRef TEXT default '' not null,
+    name           TEXT default '' not null
         unique,
-    `nationality`    TEXT,
-    `url`            TEXT not null default ''
+    nationality    TEXT,
+    url            TEXT default '' not null
 );
 
-CREATE TABLE `drivers`
+CREATE TABLE drivers
 (
-    `driverId`    INTEGER
-        primary key,
-    `driverRef`   TEXT not null default '',
-    `number`      INTEGER,
-    `code`        TEXT,
-    `forename`    TEXT not null default '',
-    `surname`     TEXT not null default '',
-    `dob`         DATE,
-    `nationality` TEXT,
-    `url`         TEXT not null default ''
+    driverId    INTEGER
+        primary key autoincrement,
+    driverRef   TEXT default '' not null,
+    number      INTEGER,
+    code        TEXT,
+    forename    TEXT default '' not null,
+    surname     TEXT default '' not null,
+    dob         DATE,
+    nationality TEXT,
+    url         TEXT default '' not null
         unique
 );
 
-CREATE TABLE `seasons`
+CREATE TABLE seasons
 (
-    `year` INTEGER not null default 0 
+    year INTEGER default 0  not null
         primary key,
-    `url`  TEXT    not null default ''
+    url  TEXT    default '' not null
         unique
 );
 
-CREATE TABLE `races`
+CREATE TABLE races
 (
-    `raceId`    INTEGER
-        primary key,
-    `year`      INTEGER not null default 0           ,
-    `round`     INTEGER not null default 0           ,
-    `circuitId` INTEGER not null default 0           ,
-    `name`      TEXT    not null default ''          ,
-    `date`      DATE    not null default '0000-00-00',
-    `time`      TEXT,
-    `url`       TEXT unique,
-    foreign key (`year`) references `seasons`(`year`),
-    foreign key (`circuitId`) references `circuits`(`circuitId`)
+    raceId    INTEGER
+        primary key autoincrement,
+    year      INTEGER default 0            not null,
+    round     INTEGER default 0            not null,
+    circuitId INTEGER default 0            not null,
+    name      TEXT    default ''           not null,
+    date      DATE    default '0000-00-00' not null,
+    time      TEXT,
+    url       TEXT unique,
+    foreign key (year) references seasons(year),
+    foreign key (circuitId) references circuits(circuitId)
 );
 
-CREATE TABLE `constructorResults`
+CREATE TABLE constructorResults
 (
-    `constructorResultsId` INTEGER
-        primary key,
-    `raceId`               INTEGER not null default 0 ,
-    `constructorId`        INTEGER not null default 0 ,
-    `points`               REAL,
-    `status`               TEXT,
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`constructorId`) references `constructors`(`constructorId`)
+    constructorResultsId INTEGER
+        primary key autoincrement,
+    raceId               INTEGER default 0 not null,
+    constructorId        INTEGER default 0 not null,
+    points               REAL,
+    status               TEXT,
+    foreign key (raceId) references races(raceId),
+    foreign key (constructorId) references constructors(constructorId)
 
 );
 
-CREATE TABLE `constructorStandings`
+CREATE TABLE constructorStandings
 (
-    `constructorStandingsId` INTEGER
-        primary key,
-    `raceId`                 INTEGER not null default 0 ,
-    `constructorId`          INTEGER not null default 0 ,
-    `points`                 REAL   not null default 0 ,
-    `position`               INTEGER,
-    `positionText`           TEXT,
-    `wins`                   INTEGER not null default 0 ,
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`constructorId`) references `constructors`(`constructorId`)
+    constructorStandingsId INTEGER
+        primary key autoincrement,
+    raceId                 INTEGER default 0 not null,
+    constructorId          INTEGER default 0 not null,
+    points                 REAL   default 0 not null,
+    position               INTEGER,
+    positionText           TEXT,
+    wins                   INTEGER default 0 not null,
+    foreign key (raceId) references races(raceId),
+    foreign key (constructorId) references constructors(constructorId)
 );
 
-CREATE TABLE `driverStandings`
+CREATE TABLE driverStandings
 (
-    `driverStandingsId` INTEGER
-        primary key,
-    `raceId`            INTEGER not null default 0 ,
-    `driverId`          INTEGER not null default 0 ,
-    `points`            REAL   not null default 0 ,
-    `position`          INTEGER,
-    `positionText`      TEXT,
-    `wins`              INTEGER not null default 0 ,
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`driverId`) references `drivers`(`driverId`)
+    driverStandingsId INTEGER
+        primary key autoincrement,
+    raceId            INTEGER default 0 not null,
+    driverId          INTEGER default 0 not null,
+    points            REAL   default 0 not null,
+    position          INTEGER,
+    positionText      TEXT,
+    wins              INTEGER default 0 not null,
+    foreign key (raceId) references races(raceId),
+    foreign key (driverId) references drivers(driverId)
 );
 
-CREATE TABLE `lapTimes`
+CREATE TABLE lapTimes
 (
-    `raceId`       INTEGER not null,
-    `driverId`     INTEGER not null,
-    `lap`          INTEGER not null,
-    `position`     INTEGER,
-    `time`         TEXT,
-    `milliseconds` INTEGER,
-    primary key (`raceId`, `driverId`, `lap`),
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`driverId`) references `drivers`(`driverId`)
+    raceId       INTEGER not null,
+    driverId     INTEGER not null,
+    lap          INTEGER not null,
+    position     INTEGER,
+    time         TEXT,
+    milliseconds INTEGER,
+    primary key (raceId, driverId, lap),
+    foreign key (raceId) references races(raceId),
+    foreign key (driverId) references drivers(driverId)
 );
 
-CREATE TABLE `pitStops`
+CREATE TABLE pitStops
 (
-    `raceId`       INTEGER not null,
-    `driverId`     INTEGER not null,
-    `stop`         INTEGER not null,
-    `lap`          INTEGER not null,
-    `time`         TEXT    not null,
-    `duration`     TEXT,
-    `milliseconds` INTEGER,
-    primary key (`raceId`, `driverId`, `stop`),
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`driverId`) references `drivers`(`driverId`)
+    raceId       INTEGER not null,
+    driverId     INTEGER not null,
+    stop         INTEGER not null,
+    lap          INTEGER not null,
+    time         TEXT    not null,
+    duration     TEXT,
+    milliseconds INTEGER,
+    primary key (raceId, driverId, stop),
+    foreign key (raceId) references races(raceId),
+    foreign key (driverId) references drivers(driverId)
 );
 
-CREATE TABLE `qualifying`
+CREATE TABLE qualifying
 (
-    `qualifyId`     INTEGER
-        primary key,
-    `raceId`        INTEGER not null default 0 ,
-    `driverId`      INTEGER not null default 0 ,
-    `constructorId` INTEGER not null default 0 ,
-    `number`        INTEGER not null default 0 ,
-    `position`      INTEGER,
-    `q1`            TEXT,
-    `q2`            TEXT,
-    `q3`            TEXT,
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`driverId`) references `drivers`(`driverId`),
-    foreign key (`constructorId`) references `constructors`(`constructorId`)
+    qualifyId     INTEGER
+        primary key autoincrement,
+    raceId        INTEGER default 0 not null,
+    driverId      INTEGER default 0 not null,
+    constructorId INTEGER default 0 not null,
+    number        INTEGER default 0 not null,
+    position      INTEGER,
+    q1            TEXT,
+    q2            TEXT,
+    q3            TEXT,
+    foreign key (raceId) references races(raceId),
+    foreign key (driverId) references drivers(driverId),
+    foreign key (constructorId) references constructors(constructorId)
 );
 
-CREATE TABLE `status`
+CREATE TABLE status
 (
-    `statusId` INTEGER
-        primary key,
-    `status`   TEXT not null default ''
+    statusId INTEGER
+        primary key autoincrement,
+    status   TEXT default '' not null
 );
 
-CREATE TABLE `results`
+CREATE TABLE results
 (
-    `resultId`        INTEGER
-        primary key,
-    `raceId`          INTEGER not null default 0 ,
-    `driverId`        INTEGER not null default 0 ,
-    `constructorId`   INTEGER not null default 0 ,
-    `number`          INTEGER,
-    `grid`            INTEGER not null default 0 ,
-    `position`        INTEGER,
-    `positionText`    TEXT    not null default '',
-    `positionOrder`   INTEGER not null default 0 ,
-    `points`          REAL   not null default 0 ,
-    `laps`            INTEGER not null default 0 ,
-    `time`            TEXT,
-    `milliseconds`    INTEGER,
-    `fastestLap`      INTEGER,
-    `rank`            INTEGER default 0,
-    `fastestLapTime`  TEXT,
-    `fastestLapSpeed` TEXT,
-    `statusId`        INTEGER not null default 0 ,
-    foreign key (`raceId`) references `races`(`raceId`),
-    foreign key (`driverId`) references `drivers`(`driverId`),
-    foreign key (`constructorId`) references `constructors`(`constructorId`),
-    foreign key (`statusId`) references `status`(`statusId`)
+    resultId        INTEGER
+        primary key autoincrement,
+    raceId          INTEGER default 0  not null,
+    driverId        INTEGER default 0  not null,
+    constructorId   INTEGER default 0  not null,
+    number          INTEGER,
+    grid            INTEGER default 0  not null,
+    position        INTEGER,
+    positionText    TEXT    default '' not null,
+    positionOrder   INTEGER default 0  not null,
+    points          REAL   default 0  not null,
+    laps            INTEGER default 0  not null,
+    time            TEXT,
+    milliseconds    INTEGER,
+    fastestLap      INTEGER,
+    rank            INTEGER default 0,
+    fastestLapTime  TEXT,
+    fastestLapSpeed TEXT,
+    statusId        INTEGER default 0  not null,
+    foreign key (raceId) references races(raceId),
+    foreign key (driverId) references drivers(driverId),
+    foreign key (constructorId) references constructors(constructorId),
+    foreign key (statusId) references status(statusId)
 )

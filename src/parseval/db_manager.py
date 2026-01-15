@@ -105,12 +105,36 @@ class Connect:
 
                     raw_conn.set_progress_handler(progress_handler, 1000)
                 self.logger.debug(f"start to execute statement: {stmt[:100]}")
-                conn_result = conn.execute(statement, parameters=parameters)
-                if fetch and conn_result is not None:
-                    self.logger.debug(f"fetching results for statement: {stmt[:100]}")
-                    results = self._fetch_query_results(
-                        conn_result, fetch=fetch, with_column_name=with_column_name
-                    )
+
+                if isinstance(parameters, list) and parameters:
+                    accumulated_results = []
+                    for idx, param_row in enumerate(parameters):
+                        try:
+                            with conn.begin_nested():
+                                conn_result = conn.execute(statement, parameters=param_row)
+                                
+                                if fetch and conn_result is not None:
+                                    row_res = self._fetch_query_results(
+                                        conn_result, fetch=fetch, with_column_name=with_column_name
+                                    )
+                                    if row_res:
+                                        if isinstance(row_res, list):
+                                            accumulated_results.extend(row_res)
+                                        else:
+                                            accumulated_results.append(row_res)
+                        except Exception as e:
+                            print(f"Skipping row {idx} due to error: {e}")
+                            continue 
+                    
+                    if accumulated_results:
+                        results = accumulated_results
+                else:
+                    conn_result = conn.execute(statement, parameters=parameters)
+                    if fetch and conn_result is not None:
+                        self.logger.debug(f"fetching results for statement: {stmt[:100]}")
+                        results = self._fetch_query_results(
+                            conn_result, fetch=fetch, with_column_name=with_column_name
+                        )
         finally:
             if raw_conn is not None:
                 try:

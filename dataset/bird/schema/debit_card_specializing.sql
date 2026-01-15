@@ -1,48 +1,48 @@
-CREATE TABLE `customers`
+CREATE TABLE customers
 (
-    `CustomerID` INTEGER UNIQUE     not null
+    CustomerID INTEGER UNIQUE     not null
         primary key,
-    `Segment`    TEXT null,
-    `Currency`   TEXT null
+    Segment    TEXT null,
+    Currency   TEXT null
 );
 
-CREATE TABLE `gasstations`
+CREATE TABLE gasstations
 (
-    `GasStationID` INTEGER    UNIQUE   not null
+    GasStationID INTEGER    UNIQUE   not null
         primary key,
-    `ChainID`      INTEGER          null,
-    `Country`      TEXT null,
-    `Segment`      TEXT null
+    ChainID      INTEGER          null,
+    Country      TEXT null,
+    Segment      TEXT null
 );
 
-CREATE TABLE `products`
+CREATE TABLE products
 (
-    `ProductID`   INTEGER   UNIQUE      not null
+    ProductID   INTEGER   UNIQUE      not null
         primary key,
-    `Description` TEXT null
+    Description TEXT null
 );
 
-CREATE TABLE `transactions_1k`
+CREATE TABLE "transactions_1k"
 (
-    `TransactionID` INTEGER
-        primary key,
-    `Date`          DATE,
-    `Time`          TEXT,
-    `CustomerID`    INTEGER,
-    `CardID`        INTEGER,
-    `GasStationID`  INTEGER,
-    `ProductID`     INTEGER,
-    `Amount`        INTEGER,
-    `Price`         REAL
+    TransactionID INTEGER
+        primary key autoincrement,
+    Date          DATE,
+    Time          TEXT,
+    CustomerID    INTEGER,
+    CardID        INTEGER,
+    GasStationID  INTEGER,
+    ProductID     INTEGER,
+    Amount        INTEGER,
+    Price         REAL
 );
 
-CREATE TABLE `yearmonth`
+CREATE TABLE "yearmonth"
 (
-    `CustomerID`  INTEGER not null
+    CustomerID  INTEGER not null
         references customers
             on update cascade on delete cascade
         references customers,
-    `Date`        TEXT    not null,
-    `Consumption` REAL,
-    primary key (`Date`, `CustomerID`)
+    Date        TEXT    not null,
+    Consumption REAL,
+    primary key (Date, CustomerID)
 )

@@ -267,7 +267,7 @@ class Instance:
         self._register_domains()
 
     def to_db(
-        self, host_or_path, database=None, port=None, username=None, password=None
+        self, host_or_path, database=None, port=None, username=None, password=None, raw_ddl=None
     ):
         database = database or self.name
         database = database if database.endswith(".sqlite") else database + ".sqlite"
@@ -282,7 +282,10 @@ class Instance:
             password=password,
             dialect=self.dialect,
         ) as conn:
-            conn.create_tables(*self.ddls.split(";"))
+            if raw_ddl:
+                conn.create_tables(*raw_ddl.split(";"))
+            else:
+                conn.create_tables(*self.ddls.split(";"))
 
             for table_name in self.catalog.tables:
                 rows = self.get_rows(table_name)

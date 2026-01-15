@@ -173,7 +173,7 @@ README-dev.md
 
 qParser/
 tests/db/
-results/
+results*/
 
 src/runtim/
 src/runtime/**

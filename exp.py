@@ -5,6 +5,7 @@ import subprocess
 import time
 import multiprocessing
 import queue
+from util import DDLConverter
 
 
 from src.corekit import get_ctx
@@ -13,27 +14,29 @@ from src.runtime.verifier import compare_sql
 
 def test_one_parseval(schema, gold, pred, dialect, maxiter, output):
     # ctx = get_ctx(log_level = 'INFO', result_path = 'results/dail')
+    converter = DDLConverter()
+    ddl = converter.process(schema)
     register_default_generators()
     from src.parseval.generator import Generator
     try:
-        generator = Generator(schema, gold, dialect)
+        generator = Generator(ddl, gold, dialect)
         result1 = generator.generate(max_iter=maxiter)
         db_path = os.path.join(output["path"], f"{output['name']}_gold.sqlite")
         if os.path.exists(db_path):
             os.remove(db_path)
-        result1.to_db(output["path"], f"{output['name']}_gold")
+        result1.to_db(output["path"], f"{output['name']}_gold", raw_ddl=schema)
         result = [compare_sql(output["path"], f"{output['name']}_gold.sqlite", gold, pred)]
     except Exception as e:
         print("Error during generation or comparison for gold query:", e)
         result = [{'state': 'ERROR', 'msg': str(e)}]
     if result[0]['state'] == 'EQ' or result[0]['state'] == 'UNKNOWN' or result[0]['state'] == 'ERROR':
         try:
-            generator = Generator(schema, pred, dialect)
+            generator = Generator(ddl, pred, dialect)
             result2 = generator.generate(max_iter=maxiter)
             db_path = os.path.join(output["path"], f"{output['name']}_pred.sqlite")
             if os.path.exists(db_path):
                 os.remove(db_path)
-            result2.to_db(output["path"], f"{output['name']}_pred")
+            result2.to_db(output["path"], f"{output['name']}_pred", raw_ddl=schema)
             result.append(compare_sql(output["path"], f"{output['name']}_pred.sqlite", gold, pred))
         except Exception as e:
             print("Error during generation or comparison for pred query:", e)
@@ -75,8 +78,6 @@ if __name__ == "__main__":
     
     for i, (gold_sql, pred_sql) in enumerate(zip(gold_sqls, pred_sqls)):
         name = f"q{i + 1}"
-        with open(progress_file, "w") as f:
-            f.write(name)
 
         database = gold_sql.split("----- SQL-EVAL -----")[1].strip()
         with open(os.path.join(dataset_path, "schema", f"{database}.sql")) as f:
@@ -91,6 +92,9 @@ if __name__ == "__main__":
         if os.path.exists(os.path.join(output["path"], f"{name}_result.json")):
             continue
         
+        with open(progress_file, "w") as f:
+            f.write(name)
+
         q = multiprocessing.Queue()
         
         p = multiprocessing.Process(
